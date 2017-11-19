@@ -11,26 +11,28 @@ import scala.collection.mutable.ArrayBuffer
   */
 abstract class  BaseModelRuner {
 
-var _configParams:util.List[util.Map[Any, Any]]= _
-def config(name:String,_configParams:util.List[util.Map[Any, Any]]):Option[String]={
+var _configParams:util.List[util.Map[String, Any]]= _
+def config(name:String,_configParams:util.List[util.Map[String, Any]]):Option[String]={
 config(0,name,_configParams)
 
 }
-  def config[T](index:Int,name:String,_configParams:util.List[util.Map[Any, Any]]):Option[String]={
+  def config[T](index:Int,name:String,_configParams:util.List[util.Map[String, Any]]):Option[String]={
     if(_configParams.size()>0 && _configParams(0).contains(name)) {
       Some(_configParams(index).get(name).asInstanceOf[String])
 
     }
     else None
   }
-def init(pmap:util.List[util.Map[Any, Any]])={
+def init(pmap:util.List[util.Map[String, Any]])={
   _configParams=pmap
 }
   val instance = new AtomicReference[Any]()
 
-  def mapping: Map[String, String]
-  def algorithm(training: DataFrame, params: ArrayBuffer[Map[String, Any]]) = {
-    val clzzName = mapping(config("algorithm", _configParams).get)
+  val mapping: Map[String, String] = Map("lr"->"com.jfbank.bigdata.models.als.LREstimator",
+    "lrt"->"com.jfbank.bigdata.models.als.LRTransFormer"
+  )
+  def algorithm(training: DataFrame, params: util.List[util.Map[String, Any]]) = {
+    val clzzName = mapping(config("name", _configParams).get)
     if (instance.get() == null) {
       instance.compareAndSet(null, Class.forName(clzzName).
         getConstructors.head.
@@ -40,19 +42,19 @@ def init(pmap:util.List[util.Map[Any, Any]])={
   }
 
   def algorithm(path: String) = {
-    val name = config("algorithm", _configParams).get
+    val name = config("transname", _configParams).get
     val clzzName = mapping.getOrElse(name, name)
     if (instance.get() == null) {
       instance.compareAndSet(null, Class.forName(clzzName).
         getConstructors.head.
-        newInstance(path, parameters))
+        newInstance(path))
     }
     instance.get()
   }
 
   def parameters = {
     import scala.collection.JavaConversions._
-    (_configParams(0) - "path" - "algorithm" - "outputTableName").map { f =>
+    (_configParams(0) - "path" - "name" - "outPutTable").map { f =>
       (f._1.toString, f._2.toString)
     }.toMap
   }

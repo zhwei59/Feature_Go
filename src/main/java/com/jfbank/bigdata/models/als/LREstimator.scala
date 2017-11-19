@@ -6,14 +6,16 @@ import org.apache.spark.ml.{Estimator, Model}
 import org.apache.spark.ml.evaluation.{BinaryClassificationEvaluator, Evaluator}
 import org.apache.spark.ml.tuning.TrainValidationSplit
 import org.apache.spark.sql.DataFrame
-
+import java.util
+import scala.collection.JavaConversions._
 /**
   * Created by zhwei on 17/11/16.
   */
-class LREstimator(training: DataFrame, params: Array[Map[String, Any]]) extends  BaseEstimator {
+class LREstimator(training: DataFrame, params: util.List[util.Map[String, Any]]) extends  BaseEstimator {
   val lr = new LogisticRegression()
 
   override def fit: Model[_] = {
+
     val paramGrid = mlParams(params.tail)
     val vectorSize = if (params.head.contains("dicTable")) {
       training.sqlContext.table(params.head.getOrElse("dicTable", "").toString).count()
