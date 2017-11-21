@@ -32,7 +32,7 @@ class DimensionOperator(dataType: DataType,dim:String,rdd:RDD[(String,ArrayBuffe
               d > start && d <= end
             })
             if(arr.size>0)
-              A+=(start.toString+","+end.toString->arr)
+              A+=(i.toString->arr)
           }
         }
         (person,A)
@@ -48,10 +48,17 @@ class DimensionOperator(dataType: DataType,dim:String,rdd:RDD[(String,ArrayBuffe
       case (person,rows)=>{
         val A:Map[String,ArrayBuffer[Row]] = Map()
         for (row <-rows){
-          val key=row.getString(row.fieldIndex(dim))
-          val arr=A.getOrElse(key,new ArrayBuffer[Row])
+          val d = dataType match {
+            case DoubleType => row.getDouble(row.fieldIndex(dim)).toString
+            case LongType =>row.getLong(row.fieldIndex(dim)).toString
+            case IntegerType =>row.getInt(row.fieldIndex(dim)).toString
+            case StringType =>row.getString(row.fieldIndex(dim))
+            case _=>"0.0"
+          }
+
+          val arr=A.getOrElse(d,new ArrayBuffer[Row])
           arr.append(row)
-          A +=(key->arr)
+          A +=(d->arr)
 
         }
         (person,A)

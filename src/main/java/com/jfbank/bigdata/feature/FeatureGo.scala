@@ -134,7 +134,6 @@ object FeatureGo {
       stat += (t.getString("name") -> t.getString("stat"))
     }
 
-    dimrdd.collect().foreach(println)
     val copt = new CaculatorOpertor(broMap,mao)
     val calcRdd = copt.sumCols(dimrdd)
     val stop = new StatOperator(stat)

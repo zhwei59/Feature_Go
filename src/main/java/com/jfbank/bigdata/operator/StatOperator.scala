@@ -55,18 +55,22 @@ class StatOperator(mao:Map[String,String] ) extends Serializable{
             case "percentile"=>{
               val arr=row.values.toSeq.map(dkv=>dkv.getDouble(dkv.fieldIndex(kv._1))).sorted
               val length=arr.size
-              var percent=1
+              if (length<=0){
+                A+=(kv._1->"0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0")
+              }else{
               val sb=new StringBuilder()
+
               val pre=Seq(0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0)
               for (p <- pre) {
                 val k = math.ceil((arr.length - 1) * (p / 100.0)).toInt
-                sb.append(p.toString)
-                sb.append(":")
+/*                sb.append(p.toString)
+                sb.append(":")*/
                 sb.append(arr(k).toString)
                 sb.append(",")
               }
              val percenttalil= sb.toString().stripSuffix(",")
               A+=(kv._1->percenttalil)
+              }
             }
           }
 
