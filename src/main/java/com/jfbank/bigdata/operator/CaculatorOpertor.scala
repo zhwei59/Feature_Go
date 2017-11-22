@@ -34,7 +34,7 @@ class CaculatorOpertor(dtypeM:Broadcast[Map[String,DataType]],mao:Map[String,Str
                   case IntegerType =>row.getInt(row.fieldIndex (makv._2)).toDouble
                   case StringType =>row.getString(row.fieldIndex (makv._2)).toDouble
                 }
-              val value=A.getOrElse(makv._2,0.0)
+              val value=A.getOrElse(makv._1,0.0)
               val r=rd+value
               A += (makv._1->r)
             }

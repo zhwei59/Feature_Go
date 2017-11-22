@@ -24,15 +24,22 @@ object ETlRunner {
     val toml = new Toml().read(f)
     val algo=toml.getTable("ETL[0]")
     val pconf= algo.getTables("task")
+    val tp=algo.getTables("tmpTable")
+
 
     val conf = new SparkConf()
     val sc = new SparkContext()
     val hiveContext = new HiveContext(sc)
+    tp.foreach(t=>tmpTable(t,hiveContext))
     pconf.foreach(t=>processToml(t,hiveContext))
 
     sc.stop()
   }
 
+  def tmpTable(toml:Toml,hiveContext: HiveContext):Unit={
+    hiveContext.read.format(toml.getString("format")).load(toml.getString("path"))
+      .registerTempTable(toml.getString("tmpTable"))
+  }
   def processToml(toml:Toml,hiveContext: HiveContext): Unit ={
     val dist=toml.getString("output")
     val drop=toml.getBoolean("drop")
