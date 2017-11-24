@@ -118,58 +118,6 @@ if (job=="train"){
 
 
 
-  //  def result(processors: util.List[Processor[T]], ref: util.List[Strategy[T]], middleResult: util.List[T], params: util.Map[Any, Any]): util.List[T] = {
-//
-//    if (!params.containsKey(FUNC)) {
-//
-//      try {
-//        val _inputTableName = inputTableName.get
-//
-//        val input = sqlContextHolder(params).table(_inputTableName)
-//
-//        val newParams = _configParams.map(f => f.map(k => (k._1.asInstanceOf[String], k._2)).toMap).toArray
-//        val bae = algorithm(
-//          input,
-//          newParams).
-//          asInstanceOf[BaseEstimator]
-//        val model = bae.fit
-//
-//        model match {
-//          case a: TrainValidationSplitModel =>
-//            a.bestModel.getClass.getMethod("save", classOf[String]).invoke(a.bestModel, path)
-//          case _ => model.getClass.getMethod("save", classOf[String]).invoke(model, path)
-//        }
-//
-//
-//      } catch {
-//        case e: Exception => e.printStackTrace()
-//      }
-//
-//
-//    } else {
-//      val oldDf = middleResult.get(0).asInstanceOf[DataFrame]
-//      val func = params.get("_func_").asInstanceOf[(DataFrame) => DataFrame]
-//
-//      try {
-//        val df = func(oldDf)
-//        val newParams = _configParams.map(f => f.map(k => (k._1.asInstanceOf[String], k._2)).toMap).toArray
-//        val bae = algorithm(
-//          df,
-//          newParams).
-//          asInstanceOf[BaseAlgorithmEstimator]
-//        val model = bae.fit
-//        model.getClass.getMethod("save", classOf[String]).invoke(model, path)
-//      } catch {
-//        case e: Exception => e.printStackTrace()
-//      }
-//
-//
-//      params.remove("sql")
-//
-//    }
-//    return if (middleResult == null) List() else middleResult
-//
-//
-//  }
+
 
 }
